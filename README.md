@@ -1,3 +1,6 @@
+## Pak'blog 
+본 프로젝트는 blog 제작으로 만들어진 소스코드입니다.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
