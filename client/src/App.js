@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component} from 'react';
 import Customer from './components/Customer';
 import './App.css';
 import Paper from '@material-ui/core/Paper';
@@ -20,54 +20,45 @@ const styles = theme => ({
   }
 })
 
-const customers = [
-  {
-    'id': 1,
-    'image': 'https://placeimg.com/64/64/1',
-    'name': 'pak',
-    'birthday': '950703',
-    'gender': 'male',
-    'job': 'student'
-  },
-  {
-    'id': 2,
-    'image': 'https://placeimg.com/64/64/2',
-    'name': 'hyung',
-    'birthday': '950703',
-    'gender': 'male',
-    'job': 'programmer'
-  },
-  {
-    'id': 3,
-    'image': 'https://placeimg.com/64/64/3',
-    'name': 'chul',
-    'birthday': '950703',
-    'gender': 'male',
-    'job': 'student'
-  },
-]
+class App extends Component{ // component가 재사용률이 매우 낮아지고, hook란 것이 생겨서 이제 function 형태로 해도 state 함수를 쓸 수 있다.
+  state = {
+    customers: ""
+  }
+  componentDidMount(){
+    this.callApi()
+      .then(res => this.setState({customers: res}))
+      .catch(err => console.log(err))
+  }
 
-function App(props) { // component가 재사용률이 매우 낮아지고, hook란 것이 생겨서 이제 function 형태로 해도 state 함수를 쓸 수 있다.
-  const {classes} = props;
-  return (
-    <Paper className={classes.root}>
-      <Table className = {classes.table}>
-        <TableHead>
-          <TableRow>
-            <TableCell>number</TableCell>
-            <TableCell>image</TableCell>
-            <TableCell>name</TableCell>
-            <TableCell>birthday</TableCell>
-            <TableCell>gender</TableCell>
-            <TableCell>job</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {customers.map(c =>{ return (<Customer key ={c.id} id={c.id} image={c.image} name={c.name} birthday={c.birthday} gender = {c.gender} job = {c.job} />) })}
-        </TableBody>
-      </Table>
-    </Paper>
-  );
+  callApi = async () =>{
+    const response = await fetch('/api/customers');
+    const body = await response.json();
+    return body;
+  }
+  render(){
+    const {classes} = this.props;
+    return (
+      <Paper className={classes.root}>
+        <Table className = {classes.table}>
+          <TableHead>
+            <TableRow>
+              <TableCell>number</TableCell>
+              <TableCell>image</TableCell>
+              <TableCell>name</TableCell>
+              <TableCell>birthday</TableCell>
+              <TableCell>gender</TableCell>
+              <TableCell>job</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {this.state.customers ? this.state.customers.map(c =>{
+               return (<Customer key ={c.id} id={c.id} image={c.image} name={c.name} birthday={c.birthday} gender = {c.gender} job = {c.job} />) 
+              }) : " "}
+          </TableBody>
+        </Table>
+      </Paper>
+    );
+  }
 }
 
 export default withStyles(styles)(App);
