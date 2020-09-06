@@ -1,5 +1,6 @@
 import React, { Component} from 'react';
 import Customer from './components/Customer';
+import CustomerAdd from './components/CustomerAdd';
 import './App.css';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -25,10 +26,23 @@ const styles = theme => ({
 });
 
 class App extends Component{ // component가 재사용률이 매우 낮아지고, hook란 것이 생겨서 이제 function 형태로 해도 state 함수를 쓸 수 있다.
-  state = {
-    customers: "",
-    completed: 0
+  constructor(props){
+    super(props);
+    this.state = {
+      customers: '',
+      completed: 0
+    }
   }
+  stateRefresh = () =>{
+    this.setState({
+      customers: '',
+      completed: 0
+    });
+    this.callApi()
+      .then(res => this.setState({customers: res}))
+      .catch(err => console.log(err))
+  }
+
   componentDidMount(){
     this.timer = setInterval(this.progress,20);
     this.callApi()
@@ -51,31 +65,34 @@ class App extends Component{ // component가 재사용률이 매우 낮아지고
   render(){
     const {classes} = this.props;
     return (
-      <Paper className={classes.root}>
-        <Table className = {classes.table}>
-          <TableHead>
-            <TableRow>
-              <TableCell>number</TableCell>
-              <TableCell>image</TableCell>
-              <TableCell>name</TableCell>
-              <TableCell>birthday</TableCell>
-              <TableCell>gender</TableCell>
-              <TableCell>job</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {this.state.customers ? this.state.customers.map(c =>{
-               return (<Customer key ={c.id} id={c.id} image={c.image} name={c.name} birthday={c.birthday} gender = {c.gender} job = {c.job} />) 
-              }) : 
+      <div>
+        <Paper className={classes.root}>
+          <Table className = {classes.table}>
+            <TableHead>
               <TableRow>
-                <TableCell colspan="6" align ="center">
-                  <CircularProgress className ={classes.progress} variant = "determinate" value ={this.state.completed}/>
-                </TableCell>
+                <TableCell>number</TableCell>
+                <TableCell>image</TableCell>
+                <TableCell>name</TableCell>
+                <TableCell>birthday</TableCell>
+                <TableCell>gender</TableCell>
+                <TableCell>job</TableCell>
               </TableRow>
-              }
-          </TableBody>
-        </Table>
-      </Paper>
+            </TableHead>
+            <TableBody>
+              {this.state.customers ? this.state.customers.map(c =>{
+                return (<Customer key ={c.id} id={c.id} image={c.image} name={c.name} birthday={c.birthday} gender = {c.gender} job = {c.job} />) 
+                }) : 
+                <TableRow>
+                  <TableCell colspan="6" align ="center">
+                    <CircularProgress className ={classes.progress} variant = "determinate" value ={this.state.completed}/>
+                  </TableCell>
+                </TableRow>
+                }
+            </TableBody>
+          </Table>
+        </Paper>
+        <CustomerAdd stateRefresh={this.stateRefresh}/>
+      </div>
     );
   }
 }
