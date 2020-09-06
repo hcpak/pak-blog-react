@@ -76,11 +76,12 @@ class App extends Component{ // component가 재사용률이 매우 낮아지고
                 <TableCell>birthday</TableCell>
                 <TableCell>gender</TableCell>
                 <TableCell>job</TableCell>
+                <TableCell>setting</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {this.state.customers ? this.state.customers.map(c =>{
-                return (<Customer key ={c.id} id={c.id} image={c.image} name={c.name} birthday={c.birthday} gender = {c.gender} job = {c.job} />) 
+                return (<Customer stateRefresh = {this.stateRefresh} key ={c.id} id={c.id} image={c.image} name={c.name} birthday={c.birthday} gender = {c.gender} job = {c.job} />) 
                 }) : 
                 <TableRow>
                   <TableCell colspan="6" align ="center">
